@@ -1,5 +1,11 @@
+import 'dart:ui';
+
+import 'package:bookly/features/homeScreen/presentation/views/homeView.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
 import 'SlidingText.dart';
 
@@ -18,18 +24,16 @@ class _SplashViewBodyState extends State<SplashViewBody>
   @override
   void initState() {
     super.initState();
-    animationController =
-        AnimationController(
-            vsync: this,
-            duration: const Duration(seconds: 1));
-    slidingAnimation = Tween<Offset>(begin:const Offset(0, 2),end:Offset.zero ,).animate(animationController);
-    animationController.forward();
-
+    initSlidingAnimation();
+    navigateToHomeScreen();
   }
+
+
+
   @override
   void dispose() {
-    super.dispose();
     animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,12 +43,30 @@ class _SplashViewBodyState extends State<SplashViewBody>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Image.asset('assets/images/Logo.png'),
-        const SizedBox(
-          height: 4,
-        ),
-        SlidingText(slidingAnimation: slidingAnimation)
+        const SizedBox(height: 4),
+        SlidingText(slidingAnimation: slidingAnimation),
       ],
     );
   }
-}
 
+  void initSlidingAnimation() {
+    animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    slidingAnimation = Tween<Offset>(
+      begin: const Offset(0, 2),
+      end: Offset.zero,
+    ).animate(animationController);
+    animationController.forward();
+  }
+  void navigateToHomeScreen() {
+    Future.delayed(
+      const Duration(seconds: 2),
+          () {
+        Get.to(() => const homeView(),
+            transition: Transition.fade, duration: Duration(milliseconds: 250));
+      },
+    );
+  }
+}
